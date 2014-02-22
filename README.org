@@ -1,0 +1,35 @@
+* Bonding
+
+Want your interfaces to bond?
+
+** Install
+
+   #+BEGIN_SRC sh
+   git clone https://github.com/cjoelrun/bonding
+   mkvirtualenv bonding
+   cd bonding
+   pip install -r requirements
+   #+END_SRC
+
+** Bond
+
+   Populate that hosts file:
+   #+BEGIN_EXAMPLE
+   [hosts]
+   192.168.101.1
+   #+END_EXAMPLE
+
+   Bond those interfaces:
+   #+BEGIN_SRC sh
+   ansible-playbook -i hosts site.yml -c paramiko
+   #+END_SRC
+
+   If you don't use keypairs:
+   #+BEGIN_SRC sh
+   ansible-playbook -k -u root -i hosts site.yml -c paramiko
+   #+END_SRC
+
+   To reboot and begin to bond:
+   #+BEGIN_SRC sh
+   ansible all -m command -a "/sbin/reboot now" -k -i hosts -u root -c paramiko
+   #+END_SRC

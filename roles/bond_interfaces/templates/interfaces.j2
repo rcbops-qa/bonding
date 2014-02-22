@@ -21,7 +21,7 @@ auto eth2
 # mgmt is configured using static network information.
 auto mgmt-bond
     iface mgmt-bond inet static
-    address {{ ipaddress }}
+    address {{ ansible_eth0['ipv4']['address'] }}
     netmask 255.255.255.0
     gateway 198.101.133.1
     dns-nameservers 8.8.8.8 8.8.4.4
