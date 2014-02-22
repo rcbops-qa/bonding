@@ -1,0 +1,55 @@
+# /etc/network/interfaces
+
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+    iface lo inet loopback
+
+#eth0 is manually configured, and slave to the "mgmt-bond" bonded NIC
+auto eth0
+    iface eth0 inet manual
+    bond-master mgmt-bond
+
+#eth2 ditto, thus creating a 2-link bond.
+auto eth2
+    iface eth2 inet manual
+    bond-master mgmt-bond
+
+# mgmt is the bonding NIC and can be used like any other normal NIC.
+# mgmt is configured using static network information.
+auto mgmt-bond
+    iface mgmt-bond inet static
+    address {{ ipaddress }}
+    netmask 255.255.255.0
+    gateway 198.101.133.1
+    dns-nameservers 8.8.8.8 8.8.4.4
+    dns-search rcb.rackspace.com
+    bond-slaves eth0 eth2
+    bond-mode active-backup
+    bond-miimon 100
+    bond-downdelay 200
+    bond-updelay 200
+
+#eth1 is manually configured, and slave to the "vmnet-bond" bonded NIC
+auto eth1
+    iface eth1 inet manual
+    bond-master vmnet-bond
+
+#eth3 ditto, thus creating a 2-link bond.
+auto eth3
+    iface eth3 inet manual
+    bond-master vmnet-bond
+
+# vmnet is the bonding NIC and can be used like any other normal NIC.
+# vmnet is configured using static network information.
+auto vmnet-bond
+    iface vmnet-bond inet static
+    up ip link set $IFACE up
+    down ip link set $IFACE down
+    bond-slaves eth1 eth3
+    bond-mode active-backup
+    bond-miimon 100
+    bond-downdelay 200
+    bond-updelay 200

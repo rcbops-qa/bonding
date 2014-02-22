@@ -1,0 +1,15 @@
+- name: install bonding dependencies
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - vim
+    - ifenslave
+
+- name: ensure kernel bonding
+  lineinfile: dest=/etc/modules regexp='bonding' insterafter=EOF line='bonding'
+
+- name: register address
+  shell: ip route get 8.8.8.8 | awk '/8.8.8.8/ {print $NF}'
+  register: ipaddress
+
+- name: setup interfaces
+  template: src=interfaces.j2 dest=/etc/interfaces owner=root group=root mode=0644
