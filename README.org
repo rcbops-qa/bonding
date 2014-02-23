@@ -27,8 +27,6 @@ In:::the/    ::::dMMMMMb::::    \ Land::of
                 :::lie.:::
 #+END_EXAMPLE
 
-
-
 ** Install
 
    #+BEGIN_SRC sh
