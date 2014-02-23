@@ -4,8 +4,26 @@
     - vim
     - ifenslave-2.6
 
-- name: ensure kernel bonding
+- name: ensure kernel bonding persistence
   lineinfile: dest=/etc/modules regexp='bonding' line='bonding'
+
+- name: load kernel bonding
+  modprobe: name=bonding state=present
 
 - name: setup interfaces
   template: src=interfaces.j2 dest=/etc/network/interfaces owner=root group=root mode=0644
+
+- name: restart networking
+  service: name=networking state=restarted
+  async: 45
+  poll: 0
+
+- name: wait for reconnect
+  wait_for: delay=10 host={{ inventory_hostname }} port=22
+  delegate_to: localhost
+
+- name: flush interfaces
+  command: ip a f {{ item }}
+  with_items:
+    - eth0
+    - eth1
