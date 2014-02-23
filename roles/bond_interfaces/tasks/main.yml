@@ -1,3 +1,7 @@
+- name: check
+  fail: msg="already bonded"
+  when: ohai_network.default_interface == "mgmt-bond"
+
 - name: install bonding dependencies
   apt: pkg={{ item }} state=installed
   with_items:
